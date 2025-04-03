@@ -1,6 +1,6 @@
 package com.darwin.abilityservice.infrastructure.configuration;
 
-import com.darwin.abilityservice.domain.AbilityUserCase;
+import com.darwin.abilityservice.domain.usecase.AbilityUserCase;
 import com.darwin.abilityservice.domain.api.IAbilityServicePort;
 import com.darwin.abilityservice.domain.spi.IAbilityPersistencePort;
 import com.darwin.abilityservice.domain.spi.ITechnologyWebClientPort;

@@ -7,6 +7,7 @@ import com.darwin.abilityservice.domain.model.AbilityTechnology;
 import com.darwin.abilityservice.domain.model.Technology;
 import com.darwin.abilityservice.domain.spi.IAbilityPersistencePort;
 import com.darwin.abilityservice.domain.spi.ITechnologyWebClientPort;
+import com.darwin.abilityservice.domain.usecase.AbilityUserCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;

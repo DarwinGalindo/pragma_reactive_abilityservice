@@ -1,4 +1,4 @@
-package com.darwin.abilityservice.domain;
+package com.darwin.abilityservice.domain.usecase;
 
 import com.darwin.abilityservice.domain.api.IAbilityServicePort;
 import com.darwin.abilityservice.domain.exception.TechnologyIdIsDuplicatedException;
