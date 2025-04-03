@@ -13,6 +13,10 @@ public class Ability {
     public Ability() {
     }
 
+    public Ability(Long id) {
+        this.id = id;
+    }
+
     public Ability(Long id, String name, String description, Integer technologiesCount) {
         this.id = id;
         this.name = name;

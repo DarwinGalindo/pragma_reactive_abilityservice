@@ -7,4 +7,5 @@ import reactor.core.publisher.Mono;
 public interface IAbilityHandler {
     Mono<ServerResponse> createAbility(ServerRequest request);
     Mono<ServerResponse> filterAbilities(ServerRequest request);
+    Mono<ServerResponse> findById(ServerRequest request);
 }

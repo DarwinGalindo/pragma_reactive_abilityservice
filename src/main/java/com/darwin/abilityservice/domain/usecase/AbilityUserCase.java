@@ -1,6 +1,7 @@
 package com.darwin.abilityservice.domain.usecase;
 
 import com.darwin.abilityservice.domain.api.IAbilityServicePort;
+import com.darwin.abilityservice.domain.exception.AbilityNotFoundException;
 import com.darwin.abilityservice.domain.exception.TechnologyIdIsDuplicatedException;
 import com.darwin.abilityservice.domain.exception.TechnologyNotFoundException;
 import com.darwin.abilityservice.domain.model.Ability;
@@ -58,5 +59,11 @@ public class AbilityUserCase implements IAbilityServicePort {
                             ability.setTechnologyList(technologyList);
                             return ability;
                         }));
+    }
+
+    @Override
+    public Mono<Ability> findById(Long id) {
+        return abilityPersistencePort.findById(id)
+                .switchIfEmpty(Mono.error(new AbilityNotFoundException()));
     }
 }

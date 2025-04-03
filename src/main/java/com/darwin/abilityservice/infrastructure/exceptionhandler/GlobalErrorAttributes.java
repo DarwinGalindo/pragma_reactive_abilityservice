@@ -1,5 +1,6 @@
 package com.darwin.abilityservice.infrastructure.exceptionhandler;
 
+import com.darwin.abilityservice.domain.exception.AbilityNotFoundException;
 import com.darwin.abilityservice.domain.exception.TechnologyIdIsDuplicatedException;
 import com.darwin.abilityservice.domain.exception.TechnologyNotFoundException;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.darwin.abilityservice.infrastructure.exceptionhandler.ExceptionMessage.TECHNOLOGY_NOT_FOUND;
+import static com.darwin.abilityservice.infrastructure.exceptionhandler.ExceptionMessage.*;
 
 @Component
 public class GlobalErrorAttributes extends DefaultErrorAttributes {
@@ -31,7 +32,10 @@ public class GlobalErrorAttributes extends DefaultErrorAttributes {
             message = TECHNOLOGY_NOT_FOUND.getMessage() + technologyNotFoundException.getId();
         } else if (error instanceof TechnologyIdIsDuplicatedException) {
             status = HttpStatus.BAD_REQUEST;
-            message = ExceptionMessage.TECHNOLOGY_ID_IS_DUPLICATED.getMessage();
+            message = TECHNOLOGY_ID_IS_DUPLICATED.getMessage();
+        } else if (error instanceof AbilityNotFoundException) {
+            status = HttpStatus.NOT_FOUND;
+            message = ABILITY_NOT_FOUND.getMessage();
         }
 
         Map<String, Object> errorAttributes = new HashMap<>();

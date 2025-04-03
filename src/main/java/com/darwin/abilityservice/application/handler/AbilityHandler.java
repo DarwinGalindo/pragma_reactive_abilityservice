@@ -40,4 +40,11 @@ public class AbilityHandler implements IAbilityHandler {
                 .collectList()
                 .flatMap(abilityResponses -> ServerResponse.ok().bodyValue(abilityResponses));
     }
+
+    @Override
+    public Mono<ServerResponse> findById(ServerRequest request) {
+        return abilityServicePort.findById(Long.parseLong(request.pathVariable("id")))
+                .map(abilityDtoMapper::toResponse)
+                .flatMap(response -> ServerResponse.ok().bodyValue(response));
+    }
 }

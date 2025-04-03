@@ -1,5 +1,6 @@
 package com.darwin.abilityservice.domain;
 
+import com.darwin.abilityservice.domain.exception.AbilityNotFoundException;
 import com.darwin.abilityservice.domain.exception.TechnologyIdIsDuplicatedException;
 import com.darwin.abilityservice.domain.exception.TechnologyNotFoundException;
 import com.darwin.abilityservice.domain.model.Ability;
@@ -149,5 +150,32 @@ class AbilityUserCaseTest {
         verify(abilityPersistencePort).filterAbilities(page, size, sortProperty, sortAscending);
         verify(abilityPersistencePort, times(2)).findAllByAbilityId(anyLong());
         verify(technologyWebClientPort, times(6)).findById(anyLong());
+    }
+
+    @Test
+    void findById_shouldReturnAbility() {
+        Long id = 1L;
+        Ability ability = new Ability(id);
+
+        when(abilityPersistencePort.findById(id)).thenReturn(Mono.just(ability));
+
+        StepVerifier.create(abilityUserCase.findById(id))
+                .expectNext(ability)
+                .verifyComplete();
+
+        verify(abilityPersistencePort).findById(id);
+    }
+
+    @Test
+    void findById_shouldThrowNotFound() {
+        Long id = 1111L;
+
+        when(abilityPersistencePort.findById(id)).thenReturn(Mono.empty());
+
+        StepVerifier.create(abilityUserCase.findById(id))
+                .expectError(AbilityNotFoundException.class)
+                .verify();
+
+        verify(abilityPersistencePort).findById(id);
     }
 }
