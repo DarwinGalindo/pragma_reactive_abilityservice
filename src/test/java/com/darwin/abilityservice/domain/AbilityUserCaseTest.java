@@ -193,4 +193,30 @@ class AbilityUserCaseTest {
 
         verify(abilityPersistencePort).findById(id);
     }
+
+    @Test
+    void existsById_shouldReturnTrue() {
+        Long id = 1L;
+
+        when(abilityPersistencePort.existsById(id)).thenReturn(Mono.just(true));
+
+        StepVerifier.create(abilityUserCase.existsById(id))
+                .expectNext(true)
+                .verifyComplete();
+
+        verify(abilityPersistencePort).existsById(id);
+    }
+
+    @Test
+    void existsById_shouldReturnFalse() {
+        Long id = 1111L;
+
+        when(abilityPersistencePort.existsById(id)).thenReturn(Mono.just(false));
+
+        StepVerifier.create(abilityUserCase.existsById(id))
+                .expectNext(false)
+                .verifyComplete();
+
+        verify(abilityPersistencePort).existsById(id);
+    }
 }

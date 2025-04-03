@@ -10,4 +10,5 @@ public interface IAbilityPersistencePort {
     Flux<Ability> filterAbilities(int page, int size, String sortProperty, boolean sortAscending);
     Flux<AbilityTechnology> findAllByAbilityId(Long abilityId);
     Mono<Ability> findById(Long id);
+    Mono<Boolean> existsById(Long id);
 }

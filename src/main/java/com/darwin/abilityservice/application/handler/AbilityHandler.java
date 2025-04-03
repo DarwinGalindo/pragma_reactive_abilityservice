@@ -47,4 +47,10 @@ public class AbilityHandler implements IAbilityHandler {
                 .map(abilityDtoMapper::toResponse)
                 .flatMap(response -> ServerResponse.ok().bodyValue(response));
     }
+
+    @Override
+    public Mono<ServerResponse> existsById(ServerRequest request) {
+        return abilityServicePort.existsById(Long.parseLong(request.pathVariable("id")))
+                .flatMap(exist -> ServerResponse.ok().bodyValue(exist));
+    }
 }

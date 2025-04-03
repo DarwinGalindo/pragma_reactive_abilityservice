@@ -63,4 +63,9 @@ public class AbilityR2dbcAdapter implements IAbilityPersistencePort {
         return abilityRepository.findById(id)
                 .map(abilityEntityMapper::toModel);
     }
+
+    @Override
+    public Mono<Boolean> existsById(Long id) {
+        return abilityRepository.existsById(id);
+    }
 }

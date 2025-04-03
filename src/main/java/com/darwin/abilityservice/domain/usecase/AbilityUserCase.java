@@ -74,4 +74,9 @@ public class AbilityUserCase implements IAbilityServicePort {
                         }))
                 .switchIfEmpty(Mono.error(new AbilityNotFoundException()));
     }
+
+    @Override
+    public Mono<Boolean> existsById(Long id) {
+        return abilityPersistencePort.existsById(id);
+    }
 }

@@ -8,4 +8,5 @@ public interface IAbilityHandler {
     Mono<ServerResponse> createAbility(ServerRequest request);
     Mono<ServerResponse> filterAbilities(ServerRequest request);
     Mono<ServerResponse> findById(ServerRequest request);
+    Mono<ServerResponse> existsById(ServerRequest request);
 }

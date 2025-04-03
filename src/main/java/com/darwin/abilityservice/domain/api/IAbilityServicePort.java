@@ -8,4 +8,5 @@ public interface IAbilityServicePort {
     Mono<Ability> createAbility(Ability ability);
     Flux<Ability> filterAbilities(int page, int size, String sortProperty, boolean sortAscending);
     Mono<Ability> findById(Long id);
+    Mono<Boolean> existsById(Long id);
 }
