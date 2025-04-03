@@ -1,7 +1,8 @@
 CREATE TABLE IF NOT EXISTS ability (
    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
    name VARCHAR(50) NOT NULL,
-   description VARCHAR(90) NOT NULL
+   description VARCHAR(90) NOT NULL,
+   technologies_count INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS ability_technology (

@@ -27,4 +27,17 @@ public class AbilityHandler implements IAbilityHandler {
                 .flatMap(ability -> ServerResponse.status(HttpStatus.CREATED)
                         .bodyValue(abilityDtoMapper.toResponse(ability)));
     }
+
+    @Override
+    public Mono<ServerResponse> filterAbilities(ServerRequest request) {
+        int page = Integer.parseInt(request.queryParam("page").orElse("0"));
+        int size = Integer.parseInt(request.queryParam("size").orElse("10"));
+        String sortProperty = request.queryParam("sort").orElse("name");
+        boolean sortAscending = request.queryParam("ascending").orElse("1").equals("1");
+
+        return abilityServicePort.filterAbilities(page, size, sortProperty, sortAscending)
+                .map(abilityDtoMapper::toResponse)
+                .collectList()
+                .flatMap(abilityResponses -> ServerResponse.ok().bodyValue(abilityResponses));
+    }
 }

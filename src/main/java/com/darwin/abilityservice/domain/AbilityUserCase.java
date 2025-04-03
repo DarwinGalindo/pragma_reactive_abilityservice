@@ -39,6 +39,24 @@ public class AbilityUserCase implements IAbilityServicePort {
                         })
                 )
                 .collectList()
-                .flatMap(technologies -> abilityPersistencePort.createAbility(ability));
+                .flatMap(technologies -> {
+                    ability.setTechnologiesCount(technologyIds.size());
+                    return abilityPersistencePort.createAbility(ability);
+                });
+    }
+
+    @Override
+    public Flux<Ability> filterAbilities(int page, int size, String sortProperty, boolean sortAscending) {
+        return abilityPersistencePort
+                .filterAbilities(page, size, sortProperty, sortAscending)
+                .flatMap(ability -> abilityPersistencePort
+                        .findAllByAbilityId(ability.getId())
+                        .flatMap(abilityTechnology -> technologyWebClientPort
+                                .findById(abilityTechnology.getTechnologyId()))
+                        .collectList()
+                        .map(technologyList -> {
+                            ability.setTechnologyList(technologyList);
+                            return ability;
+                        }));
     }
 }

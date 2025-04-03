@@ -5,16 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AbilityResponse {
+public class TechnologyDto {
     private Long id;
     private String name;
-    private String description;
-    private Integer technologiesCount;
-    private List<TechnologyDto> technologies;
 }

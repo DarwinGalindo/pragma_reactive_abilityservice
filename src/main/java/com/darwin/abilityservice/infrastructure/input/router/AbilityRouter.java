@@ -19,6 +19,7 @@ public class AbilityRouter {
     public RouterFunction<ServerResponse> abilityRoutes() {
         return route()
                 .POST(ABILITY_RESOURCE, abilityHandler::createAbility)
+                .GET(ABILITY_RESOURCE, abilityHandler::filterAbilities)
                 .build();
     }
 }
