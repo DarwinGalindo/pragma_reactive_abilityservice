@@ -31,16 +31,11 @@ public class AbilityUserCase implements IAbilityServicePort {
         }
 
         return Flux.fromIterable(ability.getTechnologyIds())
-                .flatMapSequential(id -> technologyWebClientPort.findById(id)
-                        .map(technology -> {
-                            if (technology == null || technology.getId() == null) {
-                                throw new TechnologyNotFoundException(id);
-                            }
-                            return technology;
-                        })
+                .flatMapSequential(id -> technologyWebClientPort.existsById(id)
+                        .flatMap(exists -> exists.equals(Boolean.TRUE) ? Mono.just(true) : Mono.error(new TechnologyNotFoundException(id)))
                 )
                 .collectList()
-                .flatMap(technologies -> {
+                .flatMap(existing -> {
                     ability.setTechnologiesCount(technologyIds.size());
                     return abilityPersistencePort.createAbility(ability);
                 });

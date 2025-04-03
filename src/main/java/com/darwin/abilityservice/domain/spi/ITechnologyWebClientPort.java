@@ -5,4 +5,5 @@ import reactor.core.publisher.Mono;
 
 public interface ITechnologyWebClientPort {
     Mono<Technology> findById(Long id);
+    Mono<Boolean> existsById(Long id);
 }

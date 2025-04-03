@@ -23,4 +23,12 @@ public class TechnologyWebClientAdapter implements ITechnologyWebClientPort {
                 .bodyToMono(TechnologyResponse.class)
                 .map(technologyDtoMapper::toModel);
     }
+
+    @Override
+    public Mono<Boolean> existsById(Long id) {
+        return webClient.get()
+                .uri("/technologies/{id}/exists", id)
+                .retrieve()
+                .bodyToMono(Boolean.class);
+    }
 }

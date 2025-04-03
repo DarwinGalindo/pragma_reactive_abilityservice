@@ -33,49 +33,39 @@ class AbilityUserCaseTest {
 
     @Test
     void createAbility_shouldCreate() {
-        List<Technology> existingTechs = List.of(
-                new Technology(1L, "Java", "Desc"),
-                new Technology(2L, "Spring", "Desc"),
-                new Technology(3L, "JPA", "Desc")
-        );
         List<Long> technologyIds = List.of(1L, 2L, 3L);
 
         Ability ability = new Ability(1L, "Backend", "Description", technologyIds.size());
         ability.setTechnologyIds(technologyIds);
 
-        when(technologyWebClientPort.findById(technologyIds.get(0))).thenReturn(Mono.just(existingTechs.get(0)));
-        when(technologyWebClientPort.findById(technologyIds.get(1))).thenReturn(Mono.just(existingTechs.get(1)));
-        when(technologyWebClientPort.findById(technologyIds.get(2))).thenReturn(Mono.just(existingTechs.get(2)));
+        when(technologyWebClientPort.existsById(technologyIds.get(0))).thenReturn(Mono.just(true));
+        when(technologyWebClientPort.existsById(technologyIds.get(1))).thenReturn(Mono.just(true));
+        when(technologyWebClientPort.existsById(technologyIds.get(2))).thenReturn(Mono.just(true));
         when(abilityPersistencePort.createAbility(ability)).thenReturn(Mono.just(ability));
 
         StepVerifier.create(abilityUserCase.createAbility(ability))
                 .expectNext(ability)
                 .verifyComplete();
 
-        verify(technologyWebClientPort, times(3)).findById(anyLong());
+        verify(technologyWebClientPort, times(3)).existsById(anyLong());
         verify(abilityPersistencePort).createAbility(ability);
     }
 
     @Test
     void createAbility_shouldThrowNotFoundException_ifTechIdDoesNotExist() {
-        List<Technology> existingTechs = List.of(
-                new Technology(1L, "Java", "Desc"),
-                new Technology(2L, "Spring", "Desc"),
-                new Technology(3L, "JPA", "Desc")
-        );
         List<Long> technologyIds = List.of(1L, 22L, 3L);
 
         Ability ability = new Ability(1L, "Backend", "Description", technologyIds.size());
         ability.setTechnologyIds(technologyIds);
 
-        when(technologyWebClientPort.findById(technologyIds.get(0))).thenReturn(Mono.just(existingTechs.get(0)));
-        when(technologyWebClientPort.findById(technologyIds.get(1))).thenReturn(Mono.just(new Technology()));
+        when(technologyWebClientPort.existsById(technologyIds.get(0))).thenReturn(Mono.just(true));
+        when(technologyWebClientPort.existsById(technologyIds.get(1))).thenReturn(Mono.just(false));
 
         StepVerifier.create(abilityUserCase.createAbility(ability))
                 .expectError(TechnologyNotFoundException.class)
                 .verify();
 
-        verify(technologyWebClientPort, times(2)).findById(anyLong());
+        verify(technologyWebClientPort, times(2)).existsById(anyLong());
         verify(abilityPersistencePort, never()).createAbility(ability);
     }
 
