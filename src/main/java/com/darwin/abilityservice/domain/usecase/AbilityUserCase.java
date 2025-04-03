@@ -64,6 +64,14 @@ public class AbilityUserCase implements IAbilityServicePort {
     @Override
     public Mono<Ability> findById(Long id) {
         return abilityPersistencePort.findById(id)
+                .flatMap(ability -> abilityPersistencePort.findAllByAbilityId(ability.getId())
+                        .flatMap(abilityTechnology -> technologyWebClientPort
+                                .findById(abilityTechnology.getTechnologyId()))
+                        .collectList()
+                        .map(technologyList -> {
+                            ability.setTechnologyList(technologyList);
+                            return ability;
+                        }))
                 .switchIfEmpty(Mono.error(new AbilityNotFoundException()));
     }
 }

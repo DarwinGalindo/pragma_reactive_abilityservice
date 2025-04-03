@@ -127,7 +127,7 @@ class AbilityUserCaseTest {
         Ability ability2 = new Ability();
         ability2.setId(2L);
         ability2.setName("Ability 2");
-        ability1.setTechnologyList(existingTechs);
+        ability2.setTechnologyList(existingTechs);
 
         when(abilityPersistencePort.filterAbilities(page, size, sortProperty, sortAscending))
                 .thenReturn(Flux.just(ability1, ability2));
@@ -157,13 +157,28 @@ class AbilityUserCaseTest {
         Long id = 1L;
         Ability ability = new Ability(id);
 
+        List<Technology> existingTechs = List.of(
+                new Technology(1L, "Java", "Desc"),
+                new Technology(2L, "Spring", "Desc")
+        );
+
+        List<AbilityTechnology> abilityTechnologies = List.of(
+                new AbilityTechnology(1L, id, existingTechs.get(0).getId()),
+                new AbilityTechnology(2L, id, existingTechs.get(1).getId())
+        );
+
         when(abilityPersistencePort.findById(id)).thenReturn(Mono.just(ability));
+        when(abilityPersistencePort.findAllByAbilityId(id)).thenReturn(Flux.fromIterable(abilityTechnologies));
+        when(technologyWebClientPort.findById(1L)).thenReturn(Mono.just(existingTechs.get(0)));
+        when(technologyWebClientPort.findById(2L)).thenReturn(Mono.just(existingTechs.get(1)));
 
         StepVerifier.create(abilityUserCase.findById(id))
                 .expectNext(ability)
                 .verifyComplete();
 
         verify(abilityPersistencePort).findById(id);
+        verify(abilityPersistencePort).findAllByAbilityId(id);
+        verify(technologyWebClientPort, times(2)).findById(anyLong());
     }
 
     @Test
