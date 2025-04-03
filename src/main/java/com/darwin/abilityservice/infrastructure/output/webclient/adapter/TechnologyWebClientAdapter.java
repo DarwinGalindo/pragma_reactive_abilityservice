@@ -9,6 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import static com.darwin.abilityservice.infrastructure.util.Routes.TECHNOLOGY_RESOURCE_ID;
+import static com.darwin.abilityservice.infrastructure.util.Routes.TECHNOLOGY_RESOURCE_ID_EXISTS;
+
 @RequiredArgsConstructor
 public class TechnologyWebClientAdapter implements ITechnologyWebClientPort {
     private final WebClient webClient;
@@ -17,7 +20,7 @@ public class TechnologyWebClientAdapter implements ITechnologyWebClientPort {
     @Override
     public Mono<Technology> findById(Long id) {
         return webClient.get()
-                .uri("/technologies/{id}", id)
+                .uri(TECHNOLOGY_RESOURCE_ID, id)
                 .retrieve()
                 .onStatus(HttpStatus.NOT_FOUND::equals, response -> Mono.empty())
                 .bodyToMono(TechnologyResponse.class)
@@ -27,7 +30,7 @@ public class TechnologyWebClientAdapter implements ITechnologyWebClientPort {
     @Override
     public Mono<Boolean> existsById(Long id) {
         return webClient.get()
-                .uri("/technologies/{id}/exists", id)
+                .uri(TECHNOLOGY_RESOURCE_ID_EXISTS, id)
                 .retrieve()
                 .bodyToMono(Boolean.class);
     }

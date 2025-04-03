@@ -1,9 +1,9 @@
 package com.darwin.abilityservice.infrastructure.configuration;
 
-import com.darwin.abilityservice.domain.usecase.AbilityUserCase;
 import com.darwin.abilityservice.domain.api.IAbilityServicePort;
 import com.darwin.abilityservice.domain.spi.IAbilityPersistencePort;
 import com.darwin.abilityservice.domain.spi.ITechnologyWebClientPort;
+import com.darwin.abilityservice.domain.usecase.AbilityUserCase;
 import com.darwin.abilityservice.infrastructure.output.r2dbc.adapter.AbilityR2dbcAdapter;
 import com.darwin.abilityservice.infrastructure.output.r2dbc.mapper.AbilityEntityMapper;
 import com.darwin.abilityservice.infrastructure.output.r2dbc.mapper.AbilityTechnologyEntityMapper;
@@ -23,7 +23,7 @@ public class BeanConfiguration {
     private final IAbilityTechnologyRepository abilityTechnologyRepository;
     private final AbilityEntityMapper abilityEntityMapper;
     private final AbilityTechnologyEntityMapper abilityTechnologyEntityMapper;
-    private final WebClient webClient;
+    private final WebClient technologiesWebClient;
     private final TechnologyDtoMapper technologyDtoMapper;
 
     @Bean
@@ -39,6 +39,6 @@ public class BeanConfiguration {
 
     @Bean
     public ITechnologyWebClientPort technologyWebClientPort() {
-        return new TechnologyWebClientAdapter(webClient, technologyDtoMapper);
+        return new TechnologyWebClientAdapter(technologiesWebClient, technologyDtoMapper);
     }
 }
