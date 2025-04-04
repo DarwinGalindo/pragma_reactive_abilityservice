@@ -7,6 +7,7 @@ import com.darwin.abilityservice.domain.model.Ability;
 import com.darwin.abilityservice.domain.model.AbilityTechnology;
 import com.darwin.abilityservice.domain.model.Technology;
 import com.darwin.abilityservice.domain.spi.IAbilityPersistencePort;
+import com.darwin.abilityservice.domain.spi.IAbilityTechnologyPersistencePort;
 import com.darwin.abilityservice.domain.spi.ITechnologyWebClientPort;
 import com.darwin.abilityservice.domain.usecase.AbilityUserCase;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +22,7 @@ import static org.mockito.Mockito.*;
 
 class AbilityUserCaseTest {
     private IAbilityPersistencePort abilityPersistencePort;
+    private IAbilityTechnologyPersistencePort abilityTechnologyPersistencePort;
     private ITechnologyWebClientPort technologyWebClientPort;
     private AbilityUserCase abilityUserCase;
 
@@ -28,7 +30,8 @@ class AbilityUserCaseTest {
     void setUp() {
         abilityPersistencePort = mock(IAbilityPersistencePort.class);
         technologyWebClientPort = mock(ITechnologyWebClientPort.class);
-        abilityUserCase = new AbilityUserCase(abilityPersistencePort, technologyWebClientPort);
+        abilityTechnologyPersistencePort = mock(IAbilityTechnologyPersistencePort.class);
+        abilityUserCase = new AbilityUserCase(abilityPersistencePort, abilityTechnologyPersistencePort, technologyWebClientPort);
     }
 
     @Test
@@ -38,10 +41,18 @@ class AbilityUserCaseTest {
         Ability ability = new Ability(1L, "Backend", "Description", technologyIds.size());
         ability.setTechnologyIds(technologyIds);
 
+        var abilityTechnologies = List.of(
+                new AbilityTechnology(1L, 1L, 1L),
+                new AbilityTechnology(2L, 1L, 2L),
+                new AbilityTechnology(3L, 1L, 3L)
+        );
+
         when(technologyWebClientPort.existsById(technologyIds.get(0))).thenReturn(Mono.just(true));
         when(technologyWebClientPort.existsById(technologyIds.get(1))).thenReturn(Mono.just(true));
         when(technologyWebClientPort.existsById(technologyIds.get(2))).thenReturn(Mono.just(true));
         when(abilityPersistencePort.create(ability)).thenReturn(Mono.just(ability));
+        when(abilityTechnologyPersistencePort.create(any()))
+                .thenReturn(Flux.fromIterable(abilityTechnologies));
 
         StepVerifier.create(abilityUserCase.create(ability))
                 .expectNext(ability)
@@ -121,9 +132,9 @@ class AbilityUserCaseTest {
 
         when(abilityPersistencePort.paginate(page, size, sortProperty, sortAscending))
                 .thenReturn(Flux.just(ability1, ability2));
-        when(abilityPersistencePort.findAllByAbilityId(ability1.getId()))
+        when(abilityTechnologyPersistencePort.findAllByAbilityId(ability1.getId()))
                 .thenReturn(Flux.fromIterable(abilityTechnologies1));
-        when(abilityPersistencePort.findAllByAbilityId(ability2.getId()))
+        when(abilityTechnologyPersistencePort.findAllByAbilityId(ability2.getId()))
                 .thenReturn(Flux.fromIterable(abilityTechnologies2));
         when(technologyWebClientPort.findById(existingTechs.get(0).getId()))
                 .thenReturn(Mono.just(existingTechs.get(0)));
@@ -138,7 +149,7 @@ class AbilityUserCaseTest {
                 .verifyComplete();
 
         verify(abilityPersistencePort).paginate(page, size, sortProperty, sortAscending);
-        verify(abilityPersistencePort, times(2)).findAllByAbilityId(anyLong());
+        verify(abilityTechnologyPersistencePort, times(2)).findAllByAbilityId(anyLong());
         verify(technologyWebClientPort, times(6)).findById(anyLong());
     }
 
@@ -158,7 +169,7 @@ class AbilityUserCaseTest {
         );
 
         when(abilityPersistencePort.findById(id)).thenReturn(Mono.just(ability));
-        when(abilityPersistencePort.findAllByAbilityId(id)).thenReturn(Flux.fromIterable(abilityTechnologies));
+        when(abilityTechnologyPersistencePort.findAllByAbilityId(id)).thenReturn(Flux.fromIterable(abilityTechnologies));
         when(technologyWebClientPort.findById(1L)).thenReturn(Mono.just(existingTechs.get(0)));
         when(technologyWebClientPort.findById(2L)).thenReturn(Mono.just(existingTechs.get(1)));
 
@@ -167,7 +178,7 @@ class AbilityUserCaseTest {
                 .verifyComplete();
 
         verify(abilityPersistencePort).findById(id);
-        verify(abilityPersistencePort).findAllByAbilityId(id);
+        verify(abilityTechnologyPersistencePort).findAllByAbilityId(id);
         verify(technologyWebClientPort, times(2)).findById(anyLong());
     }
 

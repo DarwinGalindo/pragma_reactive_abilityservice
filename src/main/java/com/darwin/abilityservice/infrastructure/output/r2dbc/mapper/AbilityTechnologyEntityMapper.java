@@ -10,4 +10,5 @@ unmappedSourcePolicy = ReportingPolicy.IGNORE,
 unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface AbilityTechnologyEntityMapper {
     AbilityTechnology toModel(AbilityTechnologyEntity abilityTechnologyEntity);
+    AbilityTechnologyEntity toEntity(AbilityTechnology abilityTechnology);
 }

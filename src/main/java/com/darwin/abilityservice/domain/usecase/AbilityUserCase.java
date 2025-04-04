@@ -5,7 +5,9 @@ import com.darwin.abilityservice.domain.exception.AbilityNotFoundException;
 import com.darwin.abilityservice.domain.exception.TechnologyIdIsDuplicatedException;
 import com.darwin.abilityservice.domain.exception.TechnologyNotFoundException;
 import com.darwin.abilityservice.domain.model.Ability;
+import com.darwin.abilityservice.domain.model.AbilityTechnology;
 import com.darwin.abilityservice.domain.spi.IAbilityPersistencePort;
+import com.darwin.abilityservice.domain.spi.IAbilityTechnologyPersistencePort;
 import com.darwin.abilityservice.domain.spi.ITechnologyWebClientPort;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -14,11 +16,14 @@ import java.util.List;
 
 public class AbilityUserCase implements IAbilityServicePort {
     private final IAbilityPersistencePort abilityPersistencePort;
+    private final IAbilityTechnologyPersistencePort abilityTechnologyPersistencePort;
     private final ITechnologyWebClientPort technologyWebClientPort;
 
     public AbilityUserCase(IAbilityPersistencePort abilityPersistencePort,
+                           IAbilityTechnologyPersistencePort abilityTechnologyPersistencePort,
                            ITechnologyWebClientPort technologyWebClientPort) {
         this.abilityPersistencePort = abilityPersistencePort;
+        this.abilityTechnologyPersistencePort = abilityTechnologyPersistencePort;
         this.technologyWebClientPort = technologyWebClientPort;
     }
 
@@ -37,7 +42,12 @@ public class AbilityUserCase implements IAbilityServicePort {
                 .collectList()
                 .flatMap(existing -> {
                     ability.setTechnologiesCount(technologyIds.size());
-                    return abilityPersistencePort.create(ability);
+                    return abilityPersistencePort.create(ability)
+                            .flatMap(abilityDb -> Flux.fromIterable(technologyIds)
+                                    .map(technologyId -> new AbilityTechnology(null, abilityDb.getId(), technologyId))
+                                    .collectList()
+                                    .flatMapMany(abilityTechnologyPersistencePort::create)
+                                    .then(Mono.just(abilityDb)));
                 });
     }
 
@@ -45,7 +55,7 @@ public class AbilityUserCase implements IAbilityServicePort {
     public Flux<Ability> paginate(int page, int size, String sortProperty, boolean sortAscending) {
         return abilityPersistencePort
                 .paginate(page, size, sortProperty, sortAscending)
-                .flatMap(ability -> abilityPersistencePort
+                .flatMap(ability -> abilityTechnologyPersistencePort
                         .findAllByAbilityId(ability.getId())
                         .flatMap(abilityTechnology -> technologyWebClientPort
                                 .findById(abilityTechnology.getTechnologyId()))
@@ -59,7 +69,7 @@ public class AbilityUserCase implements IAbilityServicePort {
     @Override
     public Mono<Ability> findById(Long id) {
         return abilityPersistencePort.findById(id)
-                .flatMap(ability -> abilityPersistencePort.findAllByAbilityId(ability.getId())
+                .flatMap(ability -> abilityTechnologyPersistencePort.findAllByAbilityId(ability.getId())
                         .flatMap(abilityTechnology -> technologyWebClientPort
                                 .findById(abilityTechnology.getTechnologyId()))
                         .collectList()
