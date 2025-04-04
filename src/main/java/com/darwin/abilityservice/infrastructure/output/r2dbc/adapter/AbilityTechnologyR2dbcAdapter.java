@@ -26,7 +26,8 @@ public class AbilityTechnologyR2dbcAdapter implements IAbilityTechnologyPersiste
 
     @Override
     public Flux<AbilityTechnology> findAllByAbilityId(Long abilityId) {
-        return abilityTechnologyRepository.findAllByAbilityId(abilityId)
+        return abilityTechnologyRepository
+                .findAllByAbilityId(abilityId)
                 .map(abilityTechnologyEntityMapper::toModel);
     }
 }

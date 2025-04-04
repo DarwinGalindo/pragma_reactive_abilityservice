@@ -15,6 +15,6 @@ import org.springframework.data.relational.core.mapping.Table;
 public class AbilityTechnologyEntity {
     @Id
     private Long id;
-    private Long technologyId;
     private Long abilityId;
+    private Long technologyId;
 }
