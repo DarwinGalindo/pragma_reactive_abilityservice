@@ -23,7 +23,7 @@ public class AbilityUserCase implements IAbilityServicePort {
     }
 
     @Override
-    public Mono<Ability> createAbility(Ability ability) {
+    public Mono<Ability> create(Ability ability) {
         List<Long> technologyIds = ability.getTechnologyIds();
 
         if (technologyIds.size() != technologyIds.stream().distinct().count()) {
@@ -37,14 +37,14 @@ public class AbilityUserCase implements IAbilityServicePort {
                 .collectList()
                 .flatMap(existing -> {
                     ability.setTechnologiesCount(technologyIds.size());
-                    return abilityPersistencePort.createAbility(ability);
+                    return abilityPersistencePort.create(ability);
                 });
     }
 
     @Override
-    public Flux<Ability> filterAbilities(int page, int size, String sortProperty, boolean sortAscending) {
+    public Flux<Ability> paginate(int page, int size, String sortProperty, boolean sortAscending) {
         return abilityPersistencePort
-                .filterAbilities(page, size, sortProperty, sortAscending)
+                .paginate(page, size, sortProperty, sortAscending)
                 .flatMap(ability -> abilityPersistencePort
                         .findAllByAbilityId(ability.getId())
                         .flatMap(abilityTechnology -> technologyWebClientPort

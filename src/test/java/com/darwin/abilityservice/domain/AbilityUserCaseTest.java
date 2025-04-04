@@ -32,7 +32,7 @@ class AbilityUserCaseTest {
     }
 
     @Test
-    void createAbility_shouldCreate() {
+    void create_shouldCreate() {
         List<Long> technologyIds = List.of(1L, 2L, 3L);
 
         Ability ability = new Ability(1L, "Backend", "Description", technologyIds.size());
@@ -41,18 +41,18 @@ class AbilityUserCaseTest {
         when(technologyWebClientPort.existsById(technologyIds.get(0))).thenReturn(Mono.just(true));
         when(technologyWebClientPort.existsById(technologyIds.get(1))).thenReturn(Mono.just(true));
         when(technologyWebClientPort.existsById(technologyIds.get(2))).thenReturn(Mono.just(true));
-        when(abilityPersistencePort.createAbility(ability)).thenReturn(Mono.just(ability));
+        when(abilityPersistencePort.create(ability)).thenReturn(Mono.just(ability));
 
-        StepVerifier.create(abilityUserCase.createAbility(ability))
+        StepVerifier.create(abilityUserCase.create(ability))
                 .expectNext(ability)
                 .verifyComplete();
 
         verify(technologyWebClientPort, times(3)).existsById(anyLong());
-        verify(abilityPersistencePort).createAbility(ability);
+        verify(abilityPersistencePort).create(ability);
     }
 
     @Test
-    void createAbility_shouldThrowNotFoundException_ifTechIdDoesNotExist() {
+    void create_shouldThrowNotFoundException_ifTechIdDoesNotExist() {
         List<Long> technologyIds = List.of(1L, 22L, 3L);
 
         Ability ability = new Ability(1L, "Backend", "Description", technologyIds.size());
@@ -61,31 +61,31 @@ class AbilityUserCaseTest {
         when(technologyWebClientPort.existsById(technologyIds.get(0))).thenReturn(Mono.just(true));
         when(technologyWebClientPort.existsById(technologyIds.get(1))).thenReturn(Mono.just(false));
 
-        StepVerifier.create(abilityUserCase.createAbility(ability))
+        StepVerifier.create(abilityUserCase.create(ability))
                 .expectError(TechnologyNotFoundException.class)
                 .verify();
 
         verify(technologyWebClientPort, times(2)).existsById(anyLong());
-        verify(abilityPersistencePort, never()).createAbility(ability);
+        verify(abilityPersistencePort, never()).create(ability);
     }
 
     @Test
-    void createAbility_shouldThrowDuplicateException_ifTechIdIsDuplicated() {
+    void create_shouldThrowDuplicateException_ifTechIdIsDuplicated() {
         List<Long> technologyIds = List.of(1L, 2L, 2L);
 
         Ability ability = new Ability(1L, "Backend", "Description", technologyIds.size());
         ability.setTechnologyIds(technologyIds);
 
-        StepVerifier.create(abilityUserCase.createAbility(ability))
+        StepVerifier.create(abilityUserCase.create(ability))
                 .expectError(TechnologyIdIsDuplicatedException.class)
                 .verify();
 
         verify(technologyWebClientPort, never()).findById(anyLong());
-        verify(abilityPersistencePort, never()).createAbility(ability);
+        verify(abilityPersistencePort, never()).create(ability);
     }
 
     @Test
-    void filterAbilities() {
+    void paginate() {
         int page = 0;
         int size = 5;
         String sortProperty = "name";
@@ -119,7 +119,7 @@ class AbilityUserCaseTest {
         ability2.setName("Ability 2");
         ability2.setTechnologyList(existingTechs);
 
-        when(abilityPersistencePort.filterAbilities(page, size, sortProperty, sortAscending))
+        when(abilityPersistencePort.paginate(page, size, sortProperty, sortAscending))
                 .thenReturn(Flux.just(ability1, ability2));
         when(abilityPersistencePort.findAllByAbilityId(ability1.getId()))
                 .thenReturn(Flux.fromIterable(abilityTechnologies1));
@@ -132,12 +132,12 @@ class AbilityUserCaseTest {
         when(technologyWebClientPort.findById(existingTechs.get(2).getId()))
                 .thenReturn(Mono.just(existingTechs.get(2)));
 
-        StepVerifier.create(abilityUserCase.filterAbilities(page, size, sortProperty, sortAscending))
+        StepVerifier.create(abilityUserCase.paginate(page, size, sortProperty, sortAscending))
                 .expectNext(ability1)
                 .expectNext(ability2)
                 .verifyComplete();
 
-        verify(abilityPersistencePort).filterAbilities(page, size, sortProperty, sortAscending);
+        verify(abilityPersistencePort).paginate(page, size, sortProperty, sortAscending);
         verify(abilityPersistencePort, times(2)).findAllByAbilityId(anyLong());
         verify(technologyWebClientPort, times(6)).findById(anyLong());
     }

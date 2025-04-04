@@ -23,7 +23,7 @@ public class AbilityR2dbcAdapter implements IAbilityPersistencePort {
     private final AbilityTechnologyEntityMapper abilityTechnologyEntityMapper;
 
     @Override
-    public Mono<Ability> createAbility(Ability ability) {
+    public Mono<Ability> create(Ability ability) {
         return abilityRepository
                 .save(abilityEntityMapper.toEntity(ability))
                 .flatMap(abilityEntity -> {
@@ -44,7 +44,7 @@ public class AbilityR2dbcAdapter implements IAbilityPersistencePort {
     }
 
     @Override
-    public Flux<Ability> filterAbilities(int page, int size, String sortProperty, boolean sortAscending) {
+    public Flux<Ability> paginate(int page, int size, String sortProperty, boolean sortAscending) {
         Sort sort = Sort.by(sortAscending ? Sort.Direction.ASC : Sort.Direction.DESC, sortProperty);
         Pageable pageable = PageRequest.of(page, size, sort);
 

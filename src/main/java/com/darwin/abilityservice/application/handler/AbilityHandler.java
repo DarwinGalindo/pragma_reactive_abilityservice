@@ -20,24 +20,24 @@ public class AbilityHandler implements IAbilityHandler {
     private final LocalValidator localValidator;
 
     @Override
-    public Mono<ServerResponse> createAbility(ServerRequest request) {
+    public Mono<ServerResponse> create(ServerRequest request) {
         return request.bodyToMono(AbilityRequest.class)
                 .doOnNext(localValidator::validate)
                 .map(abilityDtoMapper::toModel)
-                .flatMap(abilityServicePort::createAbility)
+                .flatMap(abilityServicePort::create)
                 .flatMap(ability -> ServerResponse.status(HttpStatus.CREATED)
                         .bodyValue(abilityDtoMapper.toResponse(ability)));
     }
 
     @Override
-    public Mono<ServerResponse> filterAbilities(ServerRequest request) {
+    public Mono<ServerResponse> paginate(ServerRequest request) {
         int page = Integer.parseInt(request.queryParam(Pagination.PAGE_PARAM).orElse(Pagination.DEFAULT_PAGE));
         int size = Integer.parseInt(request.queryParam(Pagination.SIZE_PARAM).orElse(Pagination.DEFAULT_SIZE));
         boolean sortAscending = request.queryParam(Pagination.SORT_ASCENDING).orElse(Pagination.DEFAULT_ASCENDING)
                 .equals(Pagination.ASCENDING_TRUE);
         String sortProperty = request.queryParam(Pagination.SORT_PROPERTY).orElse("name");
 
-        return abilityServicePort.filterAbilities(page, size, sortProperty, sortAscending)
+        return abilityServicePort.paginate(page, size, sortProperty, sortAscending)
                 .map(abilityDtoMapper::toResponse)
                 .collectList()
                 .flatMap(abilityResponses -> ServerResponse.ok().bodyValue(abilityResponses));

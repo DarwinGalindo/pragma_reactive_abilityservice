@@ -35,10 +35,10 @@ public class AbilityRouter {
                     path = ABILITY_RESOURCE,
                     method = RequestMethod.POST,
                     beanClass = IAbilityHandler.class,
-                    beanMethod = "createAbility",
+                    beanMethod = "create",
                     operation = @Operation(
                             summary = "Crea una nueva capacidad",
-                            operationId = "createAbility",
+                            operationId = "create",
                             requestBody = @RequestBody(
                                     description = "Capacidad a crear",
                                     required = true,
@@ -72,10 +72,10 @@ public class AbilityRouter {
                     path = ABILITY_RESOURCE,
                     method = RequestMethod.GET,
                     beanClass = IAbilityHandler.class,
-                    beanMethod = "filterAbilities",
+                    beanMethod = "paginate",
                     operation = @Operation(
                             summary = "Lista las capacidades de forma paginada",
-                            operationId = "filterAbilities",
+                            operationId = "paginate",
                             responses = {
                                     @ApiResponse(
                                             responseCode = "200",
@@ -140,8 +140,8 @@ public class AbilityRouter {
     })
     public RouterFunction<ServerResponse> abilityRoutes() {
         return route()
-                .POST(ABILITY_RESOURCE, abilityHandler::createAbility)
-                .GET(ABILITY_RESOURCE, abilityHandler::filterAbilities)
+                .POST(ABILITY_RESOURCE, abilityHandler::create)
+                .GET(ABILITY_RESOURCE, abilityHandler::paginate)
                 .GET(ABILITY_RESOURCE_ID, abilityHandler::findById)
                 .GET(ABILITY_RESOURCE_ID_EXISTS, abilityHandler::existsById)
                 .build();
