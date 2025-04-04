@@ -5,6 +5,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 
-public interface IAbilityRepository extends ReactiveCrudRepository<AbilityEntity, Long> {
+public interface IAbilityEntityRepository extends ReactiveCrudRepository<AbilityEntity, Long> {
     Flux<AbilityEntity> findBy(Pageable pageable);
 }

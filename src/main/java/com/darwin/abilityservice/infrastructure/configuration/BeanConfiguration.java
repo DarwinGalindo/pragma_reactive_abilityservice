@@ -9,8 +9,8 @@ import com.darwin.abilityservice.infrastructure.output.r2dbc.adapter.AbilityR2db
 import com.darwin.abilityservice.infrastructure.output.r2dbc.adapter.AbilityTechnologyR2dbcAdapter;
 import com.darwin.abilityservice.infrastructure.output.r2dbc.mapper.AbilityEntityMapper;
 import com.darwin.abilityservice.infrastructure.output.r2dbc.mapper.AbilityTechnologyEntityMapper;
-import com.darwin.abilityservice.infrastructure.output.r2dbc.repository.IAbilityRepository;
-import com.darwin.abilityservice.infrastructure.output.r2dbc.repository.IAbilityTechnologyRepository;
+import com.darwin.abilityservice.infrastructure.output.r2dbc.repository.IAbilityEntityRepository;
+import com.darwin.abilityservice.infrastructure.output.r2dbc.repository.IAbilityTechnologyEntityRepository;
 import com.darwin.abilityservice.infrastructure.output.webclient.adapter.TechnologyWebClientAdapter;
 import com.darwin.abilityservice.infrastructure.output.webclient.mapper.TechnologyDtoMapper;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +21,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 @RequiredArgsConstructor
 public class BeanConfiguration {
-    private final IAbilityRepository abilityRepository;
-    private final IAbilityTechnologyRepository abilityTechnologyRepository;
+    private final IAbilityEntityRepository abilityRepository;
+    private final IAbilityTechnologyEntityRepository abilityTechnologyRepository;
     private final AbilityEntityMapper abilityEntityMapper;
     private final AbilityTechnologyEntityMapper abilityTechnologyEntityMapper;
     private final WebClient technologiesWebClient;

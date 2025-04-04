@@ -3,7 +3,7 @@ package com.darwin.abilityservice.infrastructure.output.r2dbc.adapter;
 import com.darwin.abilityservice.domain.model.AbilityTechnology;
 import com.darwin.abilityservice.domain.spi.IAbilityTechnologyPersistencePort;
 import com.darwin.abilityservice.infrastructure.output.r2dbc.mapper.AbilityTechnologyEntityMapper;
-import com.darwin.abilityservice.infrastructure.output.r2dbc.repository.IAbilityTechnologyRepository;
+import com.darwin.abilityservice.infrastructure.output.r2dbc.repository.IAbilityTechnologyEntityRepository;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 
@@ -11,7 +11,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public class AbilityTechnologyR2dbcAdapter implements IAbilityTechnologyPersistencePort {
-    private final IAbilityTechnologyRepository abilityTechnologyRepository;
+    private final IAbilityTechnologyEntityRepository abilityTechnologyRepository;
     private final AbilityTechnologyEntityMapper abilityTechnologyEntityMapper;
 
     @Override

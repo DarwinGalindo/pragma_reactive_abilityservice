@@ -3,12 +3,10 @@ package com.darwin.abilityservice.infrastructure.output.r2dbc.adapter;
 import com.darwin.abilityservice.domain.model.Ability;
 import com.darwin.abilityservice.infrastructure.output.r2dbc.entity.AbilityEntity;
 import com.darwin.abilityservice.infrastructure.output.r2dbc.mapper.AbilityEntityMapper;
-import com.darwin.abilityservice.infrastructure.output.r2dbc.repository.IAbilityRepository;
+import com.darwin.abilityservice.infrastructure.output.r2dbc.repository.IAbilityEntityRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -17,15 +15,15 @@ import static org.mockito.Mockito.*;
 
 class AbilityR2dbcAdapterTest {
 
-    private IAbilityRepository abilityRepository;
+    private IAbilityEntityRepository abilityEntityRepository;
     private AbilityEntityMapper abilityEntityMapper;
     private AbilityR2dbcAdapter abilityR2DbcAdapter;
 
     @BeforeEach
     void setUp() {
-        abilityRepository = mock(IAbilityRepository.class);
+        abilityEntityRepository = mock(IAbilityEntityRepository.class);
         abilityEntityMapper = mock(AbilityEntityMapper.class);
-        abilityR2DbcAdapter = new AbilityR2dbcAdapter(abilityRepository, abilityEntityMapper);
+        abilityR2DbcAdapter = new AbilityR2dbcAdapter(abilityEntityRepository, abilityEntityMapper);
     }
 
     @Test
@@ -36,7 +34,7 @@ class AbilityR2dbcAdapterTest {
         abilityEntity.setName("Ability");
 
         when(abilityEntityMapper.toEntity(ability)).thenReturn(abilityEntity);
-        when(abilityRepository.save(abilityEntity)).thenReturn(Mono.just(abilityEntity));
+        when(abilityEntityRepository.save(abilityEntity)).thenReturn(Mono.just(abilityEntity));
         when(abilityEntityMapper.toModel(abilityEntity)).thenReturn(ability);
 
         StepVerifier.create(abilityR2DbcAdapter.create(ability))
@@ -44,7 +42,7 @@ class AbilityR2dbcAdapterTest {
                 .verifyComplete();
 
         verify(abilityEntityMapper).toEntity(ability);
-        verify(abilityRepository).save(abilityEntity);
+        verify(abilityEntityRepository).save(abilityEntity);
         verify(abilityEntityMapper).toModel(abilityEntity);
     }
 
@@ -64,7 +62,7 @@ class AbilityR2dbcAdapterTest {
         var ability2 = new Ability(abilityEntity2.getId(),
                 abilityEntity2.getName(), abilityEntity2.getDescription(), abilityEntity2.getTechnologiesCount());
 
-        when(abilityRepository.findBy(any(Pageable.class))).thenReturn(Flux.just(abilityEntity1, abilityEntity2));
+        when(abilityEntityRepository.findBy(any(Pageable.class))).thenReturn(Flux.just(abilityEntity1, abilityEntity2));
         when(abilityEntityMapper.toModel(abilityEntity1)).thenReturn(ability1);
         when(abilityEntityMapper.toModel(abilityEntity2)).thenReturn(ability2);
 
@@ -73,7 +71,7 @@ class AbilityR2dbcAdapterTest {
                 .expectNext(ability2)
                 .verifyComplete();
 
-        verify(abilityRepository).findBy(any(Pageable.class));
+        verify(abilityEntityRepository).findBy(any(Pageable.class));
     }
 
     @Test
@@ -92,7 +90,7 @@ class AbilityR2dbcAdapterTest {
         var ability2 = new Ability(abilityEntity2.getId(),
                 abilityEntity2.getName(), abilityEntity2.getDescription(), abilityEntity2.getTechnologiesCount());
 
-        when(abilityRepository.findBy(any(Pageable.class))).thenReturn(Flux.just(abilityEntity2, abilityEntity1));
+        when(abilityEntityRepository.findBy(any(Pageable.class))).thenReturn(Flux.just(abilityEntity2, abilityEntity1));
         when(abilityEntityMapper.toModel(abilityEntity1)).thenReturn(ability1);
         when(abilityEntityMapper.toModel(abilityEntity2)).thenReturn(ability2);
 
@@ -101,7 +99,7 @@ class AbilityR2dbcAdapterTest {
                 .expectNext(ability1)
                 .verifyComplete();
 
-        verify(abilityRepository).findBy(any(Pageable.class));
+        verify(abilityEntityRepository).findBy(any(Pageable.class));
     }
 
     @Test
@@ -111,13 +109,13 @@ class AbilityR2dbcAdapterTest {
         var ability = new Ability(id, abilityEntity.getName(), abilityEntity.getDescription(), 0);
 
         when(abilityEntityMapper.toModel(abilityEntity)).thenReturn(ability);
-        when(abilityRepository.findById(id)).thenReturn(Mono.just(abilityEntity));
+        when(abilityEntityRepository.findById(id)).thenReturn(Mono.just(abilityEntity));
 
         StepVerifier.create(abilityR2DbcAdapter.findById(id))
                 .expectNext(ability)
                 .verifyComplete();
 
-        verify(abilityRepository).findById(id);
+        verify(abilityEntityRepository).findById(id);
         verify(abilityEntityMapper).toModel(abilityEntity);
     }
 
@@ -131,6 +129,6 @@ class AbilityR2dbcAdapterTest {
                 .expectNext(true)
                 .verifyComplete();
 
-        verify(abilityRepository).existsById(id);
+        verify(abilityEntityRepository).existsById(id);
     }
 }
