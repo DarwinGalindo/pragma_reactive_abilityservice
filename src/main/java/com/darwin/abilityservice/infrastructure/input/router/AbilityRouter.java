@@ -88,7 +88,8 @@ public class AbilityRouter {
                             parameters = {
                                     @Parameter(in = ParameterIn.QUERY, name = Pagination.PAGE_PARAM, example = Pagination.DEFAULT_PAGE),
                                     @Parameter(in = ParameterIn.QUERY, name = Pagination.SIZE_PARAM, example = Pagination.DEFAULT_SIZE),
-                                    @Parameter(in = ParameterIn.QUERY, name = Pagination.SORT_ASCENDING, example = Pagination.DEFAULT_ASCENDING)
+                                    @Parameter(in = ParameterIn.QUERY, name = Pagination.SORT_ASCENDING, example = Pagination.DEFAULT_ASCENDING),
+                                    @Parameter(in = ParameterIn.QUERY, name = Pagination.SORT_PROPERTY, example = "name")
                             }
                     )
             ),
