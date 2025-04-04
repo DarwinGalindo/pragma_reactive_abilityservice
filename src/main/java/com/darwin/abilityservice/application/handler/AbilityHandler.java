@@ -35,7 +35,7 @@ public class AbilityHandler implements IAbilityHandler {
         int size = Integer.parseInt(request.queryParam(Pagination.SIZE_PARAM).orElse(Pagination.DEFAULT_SIZE));
         boolean sortAscending = request.queryParam(Pagination.SORT_ASCENDING).orElse(Pagination.DEFAULT_ASCENDING)
                 .equals(Pagination.ASCENDING_TRUE);
-        String sortProperty = request.queryParam(Pagination.SORT_PROPERTY).orElse("name");
+        String sortProperty = request.queryParam(Pagination.SORT_PROPERTY).orElse(Pagination.DEFAULT_SORT_PROPERTY_FOR_ABILITY);
 
         return abilityServicePort.paginate(page, size, sortProperty, sortAscending)
                 .map(abilityDtoMapper::toResponse)

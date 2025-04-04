@@ -15,6 +15,8 @@ public final class Pagination {
 
     public static final String ASCENDING_TRUE = "1";
 
+    public static final String DEFAULT_SORT_PROPERTY_FOR_ABILITY = "name";
+
     private Pagination() {
     }
 }
