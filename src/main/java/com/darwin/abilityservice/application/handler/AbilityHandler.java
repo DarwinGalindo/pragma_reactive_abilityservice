@@ -4,6 +4,7 @@ import com.darwin.abilityservice.application.dto.AbilityRequest;
 import com.darwin.abilityservice.application.mapper.AbilityDtoMapper;
 import com.darwin.abilityservice.application.validation.LocalValidator;
 import com.darwin.abilityservice.domain.api.IAbilityServicePort;
+import com.darwin.abilityservice.shared.Pagination;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -30,10 +31,11 @@ public class AbilityHandler implements IAbilityHandler {
 
     @Override
     public Mono<ServerResponse> filterAbilities(ServerRequest request) {
-        int page = Integer.parseInt(request.queryParam("page").orElse("0"));
-        int size = Integer.parseInt(request.queryParam("size").orElse("10"));
-        String sortProperty = request.queryParam("sort").orElse("name");
-        boolean sortAscending = request.queryParam("ascending").orElse("1").equals("1");
+        int page = Integer.parseInt(request.queryParam(Pagination.PAGE_PARAM).orElse(Pagination.DEFAULT_PAGE));
+        int size = Integer.parseInt(request.queryParam(Pagination.SIZE_PARAM).orElse(Pagination.DEFAULT_SIZE));
+        boolean sortAscending = request.queryParam(Pagination.SORT_ASCENDING).orElse(Pagination.DEFAULT_ASCENDING)
+                .equals(Pagination.ASCENDING_TRUE);
+        String sortProperty = request.queryParam(Pagination.SORT_PROPERTY).orElse("name");
 
         return abilityServicePort.filterAbilities(page, size, sortProperty, sortAscending)
                 .map(abilityDtoMapper::toResponse)

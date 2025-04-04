@@ -15,3 +15,14 @@ logging:
 
 server:
   port: 8082
+
+springdoc:
+  title: "API Capacidades"
+  description: "API para la gestion de capacidades"
+  version: "v1.0.0"
+  contact-name: "Darwin Galindo"
+  contact-email: "dargalindosilva@gmail.com"
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui

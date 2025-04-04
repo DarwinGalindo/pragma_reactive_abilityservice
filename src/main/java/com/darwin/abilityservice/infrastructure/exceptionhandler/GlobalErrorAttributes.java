@@ -31,7 +31,7 @@ public class GlobalErrorAttributes extends DefaultErrorAttributes {
             status = HttpStatus.NOT_FOUND;
             message = TECHNOLOGY_NOT_FOUND.getMessage() + technologyNotFoundException.getId();
         } else if (error instanceof TechnologyIdIsDuplicatedException) {
-            status = HttpStatus.BAD_REQUEST;
+            status = HttpStatus.CONFLICT;
             message = TECHNOLOGY_ID_IS_DUPLICATED.getMessage();
         } else if (error instanceof AbilityNotFoundException) {
             status = HttpStatus.NOT_FOUND;
